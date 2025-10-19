@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="config.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <!-- Header -->
+            <header class="header">
+                <h1 class="app-title">
+                    <i class="fas fa-cloud-sun"></i>
+                    Weather App
+                </h1>
+                <div class="unit-toggle">
+                    <button 
+                        @click="toggleUnit" 
+                        :class="['unit-btn', { active: temperatureUnit === 'celsius' }]"
+                    >
+                        °C
+                    </button>
+                    <button 
+                        @click="toggleUnit" 
+                        :class="['unit-btn', { active: temperatureUnit === 'fahrenheit' }]"
+                    >
+                        °F
+                    </button>
+                </div>
+            </header>
+
+            <!-- Search Bar -->
+            <search-bar 
+                @search="handleSearch"
+                :loading="loading"
+            ></search-bar>
+
+            <!-- Error Message -->
+            <div v-if="error" class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                {{ error }}
+            </div>
+
+            <!-- Loading Spinner -->
+            <loading-spinner v-if="loading"></loading-spinner>
+
+            <!-- Current Weather -->
+            <weather-card 
+                v-if="currentWeather && !loading"
+                :weather="currentWeather"
+                :unit="temperatureUnit"
+            ></weather-card>
+
+            <!-- Forecast -->
+            <div v-if="forecast.length > 0 && !loading" class="forecast-section">
+                <h2 class="section-title">5-Day Forecast</h2>
+                <div class="forecast-grid">
+                    <forecast-card
+                        v-for="day in forecast"
+                        :key="day.date"
+                        :forecast="day"
+                        :unit="temperatureUnit"
+                    ></forecast-card>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-if="!currentWeather && !loading && !error" class="empty-state">
+                <i class="fas fa-search-location"></i>
+                <h3>Search for a city to get weather information</h3>
+                <p>Enter a city name in the search bar above to view current weather and forecast</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="components/LoadingSpinner.js"></script>
+    <script src="components/SearchBar.js"></script>
+    <script src="components/WeatherCard.js"></script>
+    <script src="components/ForecastCard.js"></script>
+    <script src="services/weatherService.js"></script>
+    <script src="utils/helpers.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
